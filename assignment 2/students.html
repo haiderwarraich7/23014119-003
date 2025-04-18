@@ -1,0 +1,115 @@
+<!-- students.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Students - Student Attendance System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <!-- Navbar -->
+  <nav class="bg-blue-700 text-white p-4 flex flex-col sm:flex-row sm:justify-between items-center">
+    <h1 class="text-xl font-bold">Manage Students</h1>
+    <div class="mt-2 sm:mt-0 space-x-4">
+      <a href="dashboard.html" class="hover:text-yellow-300">Dashboard</a>
+      <a href="attendance.html" class="hover:text-yellow-300">Attendance</a>
+      <a href="report.html" class="hover:text-yellow-300">Report</a>
+      <a href="login.html" class="hover:text-yellow-300">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="p-6 space-y-8">
+    <!-- Add Semester and Section -->
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-semibold mb-4">Add Semester & Section</h2>
+      <form id="sectionForm" class="flex flex-col sm:flex-row gap-4">
+        <input type="text" id="semesterInput" placeholder="Semester (e.g. 1st)" class="w-full px-4 py-2 border rounded" required>
+        <input type="text" id="sectionInput" placeholder="Section (e.g. A)" class="w-full px-4 py-2 border rounded" required>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add</button>
+      </form>
+      <div class="mt-4 text-sm text-gray-600">Current Sections: <span id="sectionDisplay" class="text-gray-800 font-medium">None</span></div>
+    </section>
+
+    <!-- Add Student -->
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-semibold mb-4">Add Student</h2>
+      <form id="studentForm" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <input type="text" id="rollInput" placeholder="Roll No" class="px-4 py-2 border rounded" required />
+        <input type="text" id="nameInput" placeholder="Student Name" class="px-4 py-2 border rounded" required />
+        <select id="sectionSelect" class="px-4 py-2 border rounded" required>
+          <option value="">Select Section</option>
+        </select>
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Add Student</button>
+      </form>
+    </section>
+
+    <!-- Student Table -->
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-xl font-semibold mb-4">Student List</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+          <thead class="bg-blue-600 text-white">
+            <tr>
+              <th class="px-4 py-2 text-left">Roll No</th>
+              <th class="px-4 py-2 text-left">Name</th>
+              <th class="px-4 py-2 text-left">Section</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody" class="text-gray-700">
+            <!-- Students will be listed here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Script -->
+  <script>
+    const sectionForm = document.getElementById("sectionForm");
+    const studentForm = document.getElementById("studentForm");
+    const sectionSelect = document.getElementById("sectionSelect");
+    const sectionDisplay = document.getElementById("sectionDisplay");
+    const studentTableBody = document.getElementById("studentTableBody");
+
+    const sections = new Set();
+
+    sectionForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const semester = document.getElementById("semesterInput").value.trim();
+      const section = document.getElementById("sectionInput").value.trim();
+      const fullSection = `${semester} - ${section}`;
+      if (fullSection && !sections.has(fullSection)) {
+        sections.add(fullSection);
+
+        const option = document.createElement("option");
+        option.value = fullSection;
+        option.textContent = fullSection;
+        sectionSelect.appendChild(option);
+
+        sectionDisplay.textContent = Array.from(sections).join(", ");
+      }
+      sectionForm.reset();
+    });
+
+    studentForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const roll = document.getElementById("rollInput").value.trim();
+      const name = document.getElementById("nameInput").value.trim();
+      const section = sectionSelect.value;
+
+      if (roll && name && section) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="px-4 py-2">${roll}</td>
+          <td class="px-4 py-2">${name}</td>
+          <td class="px-4 py-2">${section}</td>
+        `;
+        studentTableBody.appendChild(row);
+        studentForm.reset();
+      }
+    });
+  </script>
+</body>
+</html>
